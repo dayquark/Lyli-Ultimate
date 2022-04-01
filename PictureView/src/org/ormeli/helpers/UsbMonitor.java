@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.ormeli.usb;
+package org.ormeli.helpers;
 
+import org.ormeli.LytroCore.LytroCamera;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import javax.usb.UsbConfiguration;
 import javax.usb.UsbDevice;
+import javax.usb.UsbDisconnectedException;
 import javax.usb.UsbEndpoint;
 import javax.usb.UsbException;
 import javax.usb.UsbHostManager;
@@ -15,6 +18,8 @@ import javax.usb.UsbHub;
 import javax.usb.UsbInterface;
 import javax.usb.UsbPort;
 import javax.usb.UsbServices;
+import org.openide.util.Exceptions;
+import org.ormeli.helpers.OutputPrinter;
 
 /**
  *
@@ -79,9 +84,39 @@ public class UsbMonitor {
         }
     }
 
-    
+    private static void findLytroCamera(final UsbDevice device,OutputPrinter connStatus )
+    {
+        // Dump information about the device itself
+        System.out.println(device);
+        final UsbPort port = device.getParentUsbPort();
+        if (port != null)
+        {
+            System.out.println("Connected to port: " + port.getPortNumber());
+            System.out.println("Parent: " + port.getUsbHub());
+        }
 
-    public static void listEverything() throws UsbException
+
+
+        if (LytroCamera.isLytroCamera(device)){
+            System.out.println("Lytro Camera Detected");
+            LytroCamera lytroCamera = new LytroCamera(device, connStatus);
+            lytroCamera.printCameraUSBInformation();
+        }
+        
+        System.out.println();
+
+        // Dump child devices if device is a hub
+        if (device.isUsbHub())
+        {
+            final UsbHub hub = (UsbHub) device;
+            for (UsbDevice child: (List<UsbDevice>) hub.getAttachedUsbDevices())
+            {
+                findLytroCamera(child, connStatus);
+            }
+        }
+    }    
+
+    public static void listEverything(OutputPrinter op) throws UsbException
     {
         // Get the USB services and dump information about them
         final UsbServices services = UsbHostManager.getUsbServices();
@@ -93,7 +128,8 @@ public class UsbMonitor {
         System.out.println();
 
         // Dump the root USB hub
-        dumpDevice(services.getRootUsbHub());
+//        dumpDevice(services.getRootUsbHub());
+        findLytroCamera(services.getRootUsbHub(), op);
     }
     
 }

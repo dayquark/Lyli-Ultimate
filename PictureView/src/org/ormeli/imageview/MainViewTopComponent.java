@@ -13,7 +13,9 @@ import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.ormeli.helpers.OutputPrinter;
-import org.ormeli.usb.UsbMonitor;
+import org.ormeli.LytroCore.LytroCamera;
+import org.ormeli.usb.LytroCommands.LytroCommSeq;
+import org.ormeli.helpers.LytroUSBDetector;
 
 /**
  * Top component which displays something.
@@ -42,6 +44,8 @@ import org.ormeli.usb.UsbMonitor;
 public final class MainViewTopComponent extends TopComponent {
 
     OutputPrinter connStatus = new OutputPrinter("USB status");
+    LytroCamera lytroCamera = null;
+    
     
     public MainViewTopComponent() {
         initComponents();
@@ -58,7 +62,24 @@ public final class MainViewTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Connect = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+
+        org.openide.awt.Mnemonics.setLocalizedText(Connect, org.openide.util.NbBundle.getMessage(MainViewTopComponent.class, "MainViewTopComponent.Connect.text")); // NOI18N
+        Connect.setToolTipText(org.openide.util.NbBundle.getMessage(MainViewTopComponent.class, "MainViewTopComponent.Connect.toolTipText")); // NOI18N
+        Connect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConnectActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(MainViewTopComponent.class, "MainViewTopComponent.jButton2.text")); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(jButton1, org.openide.util.NbBundle.getMessage(MainViewTopComponent.class, "MainViewTopComponent.jButton1.text")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -72,32 +93,67 @@ public final class MainViewTopComponent extends TopComponent {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(597, Short.MAX_VALUE))
+                .addGap(79, 79, 79)
+                .addComponent(jButton2)
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(Connect, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(301, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(405, Short.MAX_VALUE))
+                .addGap(56, 56, 56)
+                .addComponent(Connect, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(314, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void ConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConnectActionPerformed
         connStatus.printlnReg("Trying to connect to usb");
+  
         
         try {
-            UsbMonitor.listEverything();
+            //        try {
+//            UsbMonitor.listEverything();
+//        } catch (UsbException ex) {
+//            Exceptions.printStackTrace(ex);
+//        }
+
+            lytroCamera = LytroUSBDetector.searchLytroCamera(connStatus);
+            System.out.println("\n ++++++++++++++++++++++\n");
+//            lc.printCameraUSBInformation();
         } catch (UsbException ex) {
             Exceptions.printStackTrace(ex);
         }
         
+    }//GEN-LAST:event_ConnectActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        try {
+            lytroCamera.getCameraInformation();
+            
+        } catch (UsbException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        lytroCamera.closeLytroConn();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Connect;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
