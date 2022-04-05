@@ -23,8 +23,12 @@ public class LytroImageObjGenerator {
         inputBuffer.rewind();
         inputBuffer.position(84);
         
-        LytroImageObject lio = new LytroImageObject(inputBuffer);
-        allImages.add(lio);
+        while(inputBuffer.position() < (inputBuffer.capacity()-2)){
+            LytroImageObject lio = new LytroImageObject(inputBuffer);
+            allImages.add(lio);
+        }
+        
+        int x= 3;
     }
     
     

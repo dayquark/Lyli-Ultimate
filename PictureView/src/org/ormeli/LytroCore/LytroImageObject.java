@@ -8,7 +8,11 @@ package org.ormeli.LytroCore;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -56,83 +60,67 @@ public class LytroImageObject {
         
         temp = new byte[28];
         inputBuffer.get(temp, 0, 28);
-        String dateTemp = (new String(temp, StandardCharsets.UTF_8)).trim(); 
+        String dateTemp = (new String(temp)).trim(); 
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        try {
+            //        String string1 = "2001-07-04T12:08:56.235-0700";
+            this.dateTimeTaken = df1.parse(dateTemp);
+        } catch (ParseException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         
         this.rotation = inputBuffer.getInt();
     }
 
-    public String getFolderName() {
-        return folderName;
-    }
-
-    public void setFolderName(String folderName) {
-        this.folderName = folderName;
-    }
-
-    public String getFileNamePrefix() {
-        return fileNamePrefix;
-    }
-
-    public void setFileNamePrefix(String fileNamePrefix) {
-        this.fileNamePrefix = fileNamePrefix;
-    }
-
-    public int getFolderNumber() {
-        return folderNumber;
-    }
-
-    public void setFolderNumber(int folderNumber) {
-        this.folderNumber = folderNumber;
-    }
-
-    public int getFileNumber() {
-        return fileNumber;
-    }
-
-    public void setFileNumber(int fileNumber) {
-        this.fileNumber = fileNumber;
-    }
-
-    public int getPictureLiked() {
-        return pictureLiked;
-    }
-
-    public void setPictureLiked(int pictureLiked) {
-        this.pictureLiked = pictureLiked;
-    }
-
-    public float getLastLambda() {
-        return lastLambda;
-    }
-
-    public void setLastLambda(float lastLambda) {
-        this.lastLambda = lastLambda;
-    }
-
-    public String getPictureSHAID() {
-        return pictureSHAID;
-    }
-
-    public void setPictureSHAID(String pictureSHAID) {
-        this.pictureSHAID = pictureSHAID;
-    }
-
-    public Date getDateTimeTaken() {
-        return dateTimeTaken;
-    }
-
-    public void setDateTimeTaken(Date dateTimeTaken) {
-        this.dateTimeTaken = dateTimeTaken;
-    }
-
-    public int getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(int rotation) {
-        this.rotation = rotation;
-    }
+    /****
+     * Gets base path for a file
+     * @return 
+     */
+    private String getBasePath(){
+        String picNumber = "";
+        
+        if (fileNumber<10){
+            picNumber = "000" + String.valueOf(fileNumber);
+        }else if(fileNumber<100){
+            picNumber = "00" + String.valueOf(fileNumber);
+        }else if(fileNumber<1000){
+            picNumber = "0" + String.valueOf(fileNumber);
+        }else{
+            picNumber = String.valueOf(fileNumber);
+        }
+        
+        
+        return "I:\\DCIM\\" + String.valueOf(folderNumber)+folderName 
+                + "\\" + fileNamePrefix+picNumber;
+    }    
     
     
+    /****
+     * Gets string w/ raw path w/o null termination
+     * @return 
+     */
+    public String getPathToRaw(){
+        return this.getBasePath() + ".RAW";
+    }
+
+    /***
+     * Gets base path to 128 jpg image
+     * @return 
+     */
+    public String getPathTo128(){
+        return this.getBasePath() + ".128";
+    }
+    
+    /****
+     * Gets Meta-Data of the file
+     * @return 
+     */
+    public String getMetaDataPath(){
+        return this.getBasePath() + ".TXT";
+    }
+
+    public String getJPGPath(){
+        return this.getBasePath() + ".JPG";
+    }
     
 }
