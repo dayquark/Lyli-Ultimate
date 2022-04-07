@@ -49,7 +49,7 @@ public class LytroImageObject {
         folderNumber = inputBuffer.getInt();
         fileNumber = inputBuffer.getInt();        
         
-        inputBuffer.position(40);
+        inputBuffer.position(inputBuffer.position() + 16);
         this.pictureLiked = inputBuffer.getInt();
         
         this.lastLambda = inputBuffer.getFloat();

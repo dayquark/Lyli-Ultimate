@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import org.openide.util.Exceptions;
 import org.ormeli.LytroCore.LytroImageObject;
@@ -76,14 +79,15 @@ public class ByteBufferConverters {
         ByteBuffer buf = ByteBuffer.allocate(92);
         inChannel.read(buf);
         
-        String temp;
+        
+//        String temp;
         
         buf = ByteBuffer.allocate(128);
         buf.rewind();
         while (inChannel.read(buf) != -1) {
 
             buf.rewind();
-            int size = buf.asCharBuffer().capacity();
+//            int size = buf.asCharBuffer().capacity();
             
             LytroImageObject lio = new LytroImageObject(buf);
             
@@ -94,7 +98,7 @@ public class ByteBufferConverters {
             }        
             
 
-            temp = ByteBufferConverters.ByteBufferToString(buf);
+//            temp = ByteBufferConverters.ByteBufferToString(buf);
             buf = ByteBuffer.allocate(128);
 //            buf.clear();
         }
@@ -102,4 +106,15 @@ public class ByteBufferConverters {
         inFile.close();
         return allBBs;
     }
+    
+    public static ByteBuffer readFileToByteBuffer(String filename) throws IOException{
+        Path path = Paths.get(filename);
+        byte[] data = Files.readAllBytes(path);
+        
+        ByteBuffer bb = ByteBuffer.wrap(data);
+        return bb;
+    }
+    
 }
+
+

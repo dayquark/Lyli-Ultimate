@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import org.ormeli.LytroCore.LytroDescriptor;
-import org.ormeli.LytroCore.LytroImageObjGenerator;
+import org.ormeli.LytroCore.LytroImageObjManager;
 import org.ormeli.helpers.ByteBufferConverters;
 import org.ormeli.usb.USBBulkComm;
 import org.usb4java.DeviceHandle;
@@ -125,7 +125,7 @@ public class LytroCommSeq {
         cbuff.rewind();
 //        char car = cbuff.get(85);
         
-        LytroImageObjGenerator liog = new LytroImageObjGenerator(output);
+        LytroImageObjManager liog = new LytroImageObjManager(output);
         
         return output;
     }

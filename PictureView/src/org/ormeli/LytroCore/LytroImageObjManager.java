@@ -13,22 +13,25 @@ import org.ormeli.helpers.ByteBufferConverters;
  *
  * @author quark
  */
-public class LytroImageObjGenerator {
+public class LytroImageObjManager {
 
     ArrayList<LytroImageObject> allImages = new ArrayList<>();
 
-    public LytroImageObjGenerator(ByteBuffer inputBuffer) {
-        
-        String content= ByteBufferConverters.ByteBufferToString(inputBuffer);
-        inputBuffer.rewind();
-        inputBuffer.position(84);
+    public LytroImageObjManager(ByteBuffer inputBuffer) {
+
+        //Identifies location of File start
+        for (int i=0; i<inputBuffer.capacity();i++){
+            if (((char) inputBuffer.get(i)) == 'P'){
+                inputBuffer.position(i);
+                break;
+            }
+        }
         
         while(inputBuffer.position() < (inputBuffer.capacity()-2)){
             LytroImageObject lio = new LytroImageObject(inputBuffer);
             allImages.add(lio);
         }
-        
-        int x= 3;
+
     }
     
     
