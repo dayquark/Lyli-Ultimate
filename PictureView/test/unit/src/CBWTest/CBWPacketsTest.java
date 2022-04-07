@@ -9,12 +9,12 @@ package CBWTest;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.openide.util.Exceptions;
 import org.ormeli.helpers.ByteBufferConverters;
 import org.ormeli.usb.LytroCommands.LytroCommLoad;
+import org.ormeli.LytroCore.LytroImageObjManager;
 
 /**
  *
@@ -48,9 +48,15 @@ public class CBWPacketsTest{
     @Test
     public void testConversionByteToLytroObj(){
         try {
-            ByteBufferConverters.readFile("fileList.txt");
+//            ByteBufferConverters.readFile("fileList.txt");
+            ByteBuffer bb = ByteBufferConverters.readFileToByteBuffer("fileList.txt");
+            LytroImageObjManager liog = new LytroImageObjManager(bb);
+            int i = 3;
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
+    
+    
+    
 }
