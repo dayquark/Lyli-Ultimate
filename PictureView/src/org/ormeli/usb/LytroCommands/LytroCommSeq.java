@@ -99,34 +99,33 @@ public class LytroCommSeq {
         return output;
     }
     
-    public static ByteBuffer ReadImageList(DeviceHandle handle){
+    public static LytroImageObjManager ReadImageList(DeviceHandle handle){
 
         System.out.println("Reading Image list");
         
+        //Request command
         USBBulkComm.writeToUsb(handle, LytroCommLoad.LoadPictureListCommand(), OUT_ENDPOINT);
-//        USBBulkComm.writeToUsb(handle, ByteBufferConverters.StringTo16Byte("A:\\FIRMWARE.TXT"), OUT_ENDPOINT);
-        
+        //Gets size
         ByteBuffer output = USBBulkComm.readFromUsb(handle, 16, IN_ENDPOINT);
-//        String filename = ByteBufferConverters.ByteBufferToString(output);
         
-//        System.out.println("FirmwareFile");
-//        System.out.println(filename);
-        
+        //Queries size of data to download
         int dataInSize = QueryTransferSize(handle);
-
+        
+        //Requests data to download
         USBBulkComm.writeToUsb(handle, LytroCommander.DownloadData(), OUT_ENDPOINT);
         output = USBBulkComm.readFromUsb(handle, dataInSize, IN_ENDPOINT);
+        //Blank read to finish reading
         USBBulkComm.readFromUsb(handle, 13, IN_ENDPOINT);        
         
+        //Post process output
+        // Writes to text file output information
         ByteBufferConverters.ByteBufferToTxtFile("fileList.txt", output);
         System.out.println("Wrote firmware txt");
 
         CharBuffer cbuff = output.asCharBuffer();
         cbuff.rewind();
-//        char car = cbuff.get(85);
-        
         LytroImageObjManager liog = new LytroImageObjManager(output);
         
-        return output;
+        return liog;
     }
 }

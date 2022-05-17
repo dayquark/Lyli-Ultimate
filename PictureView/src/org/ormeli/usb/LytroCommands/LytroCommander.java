@@ -26,23 +26,7 @@ public class LytroCommander {
         CommandBlockWrapper cmb = new CommandBlockWrapper(commandBlock);
         return cmb.generateByteArray();     
     }
-    
-    
 
-    
-    /****
-     * Gets file size 0xc6 command
-     * @return 
-     */
-//    public static byte[] getSelectedFileSize(){
-//        byte[] commandBlock = new byte[] {(byte)0xc6, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00};
-//        byte[] tag = new byte[] {(byte)0x10, (byte)0x30, (byte)0x6b, (byte)0xf9};
-//        
-//        CommandBlockWrapper cmb = new CommandBlockWrapper(tag, commandBlock);
-//        cmb.changeToHostToDevice();
-//        cmb.setDataTransferLength(65536);
-//        return cmb.generateByteArray();
-//    }
 
     /****
      * Gets data from Lytro 0xc4 command
